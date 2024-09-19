@@ -1,0 +1,26 @@
+{
+  "editor.guides.bracketPairs": "active",
+  "cSpell.words": [
+    "CREATECONTEXT"
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#001a58",
+    "activityBar.background": "#001a58",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#bf0039",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#001a58",
+    "statusBar.background": "#000b25",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#001a58",
+    "statusBarItem.remoteBackground": "#000b25",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#000b25",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#000b2599",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#000B25"
+}

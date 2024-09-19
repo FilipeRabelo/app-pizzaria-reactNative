@@ -1,0 +1,35 @@
+
+// ROTAS INDEX
+
+// componente q decide qual rota vai mostrar, se tiver logado mostra a de logado
+// se nao tiver logado mostra a signIn
+// controla as rotas - gerencia as rotas
+
+import React      from "react";
+import { View, ActivityIndicator } from "react-native";
+
+import AppRoutes  from "./app.routes";        // se ele esta LOGADO
+import AuthRoutes from "./auth.routes";       // se ele NAO esta logado
+
+
+function Routes() {                           // quem vai distribuir e controlar tudo
+
+  const isAuthenticated = false;
+  const loading = false;                      // controle de loading para melhorar a experiencia do user
+
+  if(loading){
+    return(
+      <View style={{flex: 1, backgroundColor: '#1d1d2e', justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size={"large"} color={'#DC143C'}/>
+      </View>
+    )
+  }
+
+  return( 
+    isAuthenticated ? <AppRoutes/> : <AuthRoutes/>
+  )
+}
+
+export default Routes; 
+
+
