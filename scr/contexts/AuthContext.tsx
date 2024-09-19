@@ -3,42 +3,39 @@
 // AUTHCONTEXT.TSX            // CONTEXTO DE AUTENTIFICAÇÃO
 
 import React, { useState, createContext, ReactNode } from "react";
+import { api } from '../services/api';
 
 // tipagens do createContext
 
-type AuthContextData = {      // informações q o context vai ter como padrão
-
+type AuthContextData = {                                          // informações q o context vai ter como padrão
   user: UserProps,
-  isAuthenticated: boolean    // para saber se o user esta logado
+  isAuthenticated: boolean                                        // para saber se o user esta logado
   signIn: (credenciais: SignInProps) => Promise<void>;
 }
 
-type UserProps = {            // tipando informações do usuário
-
+type UserProps = {                                                // tipando informações do usuário
   id: string,
   name: string,
   email: string,
   token: string
 }
 
-type AuthProviderProps = {    // ReactNode pata tipar o children do authProvider
+type AuthProviderProps = {                                        // ReactNode pata tipar o children do authProvider
 
   children: ReactNode;
 }
 
 type SignInProps = {
-
   email: string,
   password: string
 }
 
 
 // CRIANDO O componente CREATECONTEXT
-
 export const AuthContext = createContext({} as AuthContextData)   // AuthContext vai (as) respeitar o AuthContextData
 
-// CRIANDO O component PROVIDER DO CONTEXTO
 
+// CRIANDO O component PROVIDER DO CONTEXTO
 export function AuthProvider({ children }: AuthProviderProps) {   // AuthProvider vai (as) respeitar o AuthProviderProps
 
   const [user, setUser] = useState<UserProps>({                   // informações do usuário
@@ -47,23 +44,37 @@ export function AuthProvider({ children }: AuthProviderProps) {   // AuthProvide
     name: '',
     email: '',
     token: ''
-  })
+  });
+
+  const [loadingAuth, setLoadingAuth] = useState(false);          // para controlar o acesso
 
   const isAuthenticated = !!user.name;
 
   async function signIn({email, password}: SignInProps) {         // METODO DE LOGIN
-    alert(email + ' ' + password)
-    console.log(email + ' ' + password);
+
+    setLoadingAuth(true);
+  
+    try {                                                         // requisição a API
+      const response = await api.post('/session', {
+        email,
+        password
+      })
+
+      console.log(response.data)
+
+    } catch (err) {
+      console.log('Erro ao acessar', err);
+      setLoadingAuth(false);                                       // para parar pq deu erro
+    }
   }
 
+
+
   return (
-
     // aqui ficar todas as paginas - AuthContext.Provider
-
     <AuthContext.Provider value={{ user, isAuthenticated, signIn }}>
       {children}
     </AuthContext.Provider>
-
     // todo o projeto vai estar dentro do Contexto
   )
 }

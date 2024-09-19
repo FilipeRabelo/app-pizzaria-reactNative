@@ -100,4 +100,12 @@ AXIOS
 
 ------ expo install axios
 
+// DEIXAR O BACKEND em start
+
+// para rodar em desenvolvimento precisa ser assim:
+// react-native nao deixa usar o localhost http
+// digitar no terminal ipconfig
+// pegar o ip da maquina - baseURL: 'http://192.168.0.4:3333'
+// EM PRODUCAO MUDA
+
 -------------------------------------------------------------
