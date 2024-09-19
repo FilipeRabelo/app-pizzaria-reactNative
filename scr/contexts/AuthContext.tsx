@@ -3,6 +3,7 @@
 // AUTHCONTEXT.TSX            // CONTEXTO DE AUTENTIFICAÇÃO
 
 import React, { useState, createContext, ReactNode } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";  // para gravar os dados do login so store do navegador
 import { api } from '../services/api';
 
 // tipagens do createContext
@@ -61,6 +62,26 @@ export function AuthProvider({ children }: AuthProviderProps) {   // AuthProvide
       })
 
       console.log(response.data)
+
+      const { id, name, token } = response.data;                  // desconstruindo
+
+      const data = {
+        ...response.data,     // passando do objeto data para a variavel data ser transformada em string
+      }
+      
+      // transformando em objeto em string para ser salva no AsyncStorage- JSON.stringify(data)
+      await AsyncStorage.setItem('@pizzariabrasa', JSON.stringify(data))  
+
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+      setUser({
+        id,
+        name,
+        email,
+        token
+      })
+
+      setLoadingAuth(false);
 
     } catch (err) {
       console.log('Erro ao acessar', err);
