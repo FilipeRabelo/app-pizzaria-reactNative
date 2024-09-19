@@ -1,23 +1,40 @@
-import React from "react";
-import {View, Text, StyleSheet} from "react-native"
 
-export default function Dashboard(){
-  return(
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, Button } from "react-native"
+
+import { AuthContext } from "../../contexts/AuthContext"
+
+
+export default function Dashboard() {
+
+  const { signOut } = useContext(AuthContext)
+
+  return (
+    
     <View style={styles.container}>
       <Text style={styles.text}>Seja bem vindo</Text>
       <Text style={styles.text}>Tela de Dashboard</Text>
+
+      <Button
+        title="Sair do App"
+        onPress={signOut}
+      />
     </View>
   )
 }
 
+
+
+
+
 const styles = StyleSheet.create({
-  container:{
+  container: {
     backgroundColor: "#1d1d2e",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  text:{
+  text: {
     color: '#FF7300',
     fontSize: 24,
     fontWeight: "bold",
@@ -27,5 +44,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#101026",
     textAlign: "center",
     borderRadius: 8
-  }
+  },
 })

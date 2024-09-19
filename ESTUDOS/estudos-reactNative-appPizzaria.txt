@@ -109,3 +109,5 @@ AXIOS
 // EM PRODUCAO MUDA
 
 -------------------------------------------------------------
+
+useEffect  - ciclo de vida

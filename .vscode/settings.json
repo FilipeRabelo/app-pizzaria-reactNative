@@ -1,7 +1,8 @@
 {
   "editor.guides.bracketPairs": "active",
   "cSpell.words": [
-    "CREATECONTEXT"
+    "CREATECONTEXT",
+    "defaults"
   ],
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#001a58",

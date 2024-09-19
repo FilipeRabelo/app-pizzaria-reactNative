@@ -1,7 +1,6 @@
 
-
 import React, { useState, useContext } from "react";
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import { AuthContext } from '../../contexts/AuthContext'
 
@@ -9,7 +8,7 @@ import { AuthContext } from '../../contexts/AuthContext'
 
 export default function SignIn() {
 
-  const { signIn } = useContext(AuthContext);
+  const { signIn, loadingAuth } = useContext(AuthContext);
 
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +17,6 @@ export default function SignIn() {
   async function handleLogin() {                        // função para renderizar a porra toda
 
     if (email === '' || password === '') {
-      alert('Digite seu email e senha!');
       return;
     }
 
@@ -55,8 +53,16 @@ export default function SignIn() {
         />
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
+
+          {loadingAuth? (
+            <ActivityIndicator size={"large"} color={'#DC143C'}/>
+          ) : (
+
           <Text style={styles.buttonText}>Acessar</Text>
+          )}
+
         </TouchableOpacity>
+
       </View>
 
     </View>
@@ -103,12 +109,12 @@ const styles = StyleSheet.create({
   button: {
     width: '95%',
     height: 40,
-    backgroundColor: "#3fffa3",
+    // backgroundColor: "#3fffa3",
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8
-    // backgroundColor: "#39FF14",
+    marginTop: 8,
+    backgroundColor: "#39FF14",
   },
 
   buttonText: {

@@ -8,14 +8,13 @@ import React, { useContext } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { AuthContext } from "../contexts/AuthContext"
 
-import AppRoutes from "./app.routes";        // se ele esta LOGADO
-import AuthRoutes from "./auth.routes";       // se ele NAO esta logado
+import AppRoutes from "./app.routes";                            // se ele esta LOGADO
+import AuthRoutes from "./auth.routes";                          // se ele NAO esta logado
 
 
-function Routes() {                           // quem vai distribuir e controlar tudo
+function Routes() {                                              // quem vai distribuir e controlar tudo
 
-  const { isAuthenticated } = useContext(AuthContext)
-  const loading = false;                      // controle de loading para melhorar a experiencia do user
+  const { isAuthenticated, loading } = useContext(AuthContext)   // quem controle o loadin é o context
 
   if (loading) {
     return (
