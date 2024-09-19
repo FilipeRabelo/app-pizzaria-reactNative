@@ -52,6 +52,7 @@ export function AuthProvider({ children }: AuthProviderProps) {   // AuthProvide
   const isAuthenticated = !!user.name;
 
   async function signIn({email, password}: SignInProps) {         // METODO DE LOGIN
+    alert(email + ' ' + password)
     console.log(email + ' ' + password);
   }
 
