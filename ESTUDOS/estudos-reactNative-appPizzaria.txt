@@ -1,4 +1,7 @@
 
+// qndo nao for um component nao precisa de ser .tsx - pode ser .ts
+
+--------------------------------------------------------------
 
 -- npm install -g expo
 
@@ -8,6 +11,7 @@
 -- expo install react-native-screens react-native-safe-area-context
 -- expo install @react-navigation/native-stack
 -- npx expo install @react-native-async-storage/async-storage
+-- expo install axios
 
 --------------------------------------------------------------
 
@@ -50,7 +54,7 @@ FLUXO DE AUTENTIFICAÇÃO: CONTEXT AUTHENTICATE -- REPENSÁVEL PELAS informaçõ
 
 -------------------------------------------------------------
 
-// Bibliotecas úteis
+Bibliotecas úteis
 
 Aqui estão algumas bibliotecas que você pode considerar instalar:
 
@@ -61,34 +65,39 @@ Aqui estão algumas bibliotecas que você pode considerar instalar:
 
 -------------------------------------------------------------
 
-// EXPO
+EXPO
 
-O Expo é um framework e uma plataforma para desenvolvimento de aplicativos móveis usando React Native. 
-Ele simplifica o processo de criação, teste e publicação de apps, 
+// O Expo é um framework e uma plataforma para desenvolvimento de aplicativos móveis usando React Native. 
+
+// Ele simplifica o processo de criação, teste e publicação de apps, 
 fornecendo uma série de ferramentas e bibliotecas integradas.
 
-Expo facilita o desenvolvimento em React Native, por isso não é necessário instalar o React Native separadamente. 
-O Expo já inclui o React Native por baixo dos panos.
+// Expo facilita o desenvolvimento em React Native, por isso não é necessário instalar o React Native separadamente. 
+// O Expo já inclui o React Native por baixo dos panos.
 
 
 // Principais características do Expo:
 
 1 - Facilidade de uso: Permite que desenvolvedores iniciantes construam aplicativos sem precisar configurar ambientes nativos complexos.
-
 2 - Componentes prontos: Inclui uma biblioteca de componentes prontos para uso que seguem as diretrizes de design de iOS e Android.
-
 3 - Expo Go: Um aplicativo que permite que você visualize seu projeto em dispositivos móveis sem precisar compilar ou instalar nativamente.
-
 4 - API integrada: Fornece acesso a várias APIs, como câmera, localização, notificações, etc., sem necessidade de configuração adicional.
-
 5 - Desdobramento simplificado: Facilita a publicação e atualização de aplicativos diretamente, 
 sem precisar passar pelo processo tradicional de envio para as lojas de aplicativos.
 
 -------------------------------------------------------------
 
-// PROVIDER
+PROVIDER
 
-Provider é um componente que permite compartilhar dados ou funcionalidades entre diferentes partes da aplicação 
+// Provider é um componente que permite compartilhar dados ou funcionalidades entre diferentes partes da aplicação 
 sem precisar passar essas informações através de props manualmente.
+
+-------------------------------------------------------------
+
+AXIOS   
+
+-> API de requisições HTTP
+
+------ expo install axios
 
 -------------------------------------------------------------
