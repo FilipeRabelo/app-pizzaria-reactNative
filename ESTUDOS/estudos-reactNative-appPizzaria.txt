@@ -70,7 +70,7 @@ EXPO
 // O Expo é um framework e uma plataforma para desenvolvimento de aplicativos móveis usando React Native. 
 
 // Ele simplifica o processo de criação, teste e publicação de apps, 
-fornecendo uma série de ferramentas e bibliotecas integradas.
+// fornecendo uma série de ferramentas e bibliotecas integradas.
 
 // Expo facilita o desenvolvimento em React Native, por isso não é necessário instalar o React Native separadamente. 
 // O Expo já inclui o React Native por baixo dos panos.
@@ -82,26 +82,15 @@ fornecendo uma série de ferramentas e bibliotecas integradas.
 2 - Componentes prontos: Inclui uma biblioteca de componentes prontos para uso que seguem as diretrizes de design de iOS e Android.
 3 - Expo Go: Um aplicativo que permite que você visualize seu projeto em dispositivos móveis sem precisar compilar ou instalar nativamente.
 4 - API integrada: Fornece acesso a várias APIs, como câmera, localização, notificações, etc., sem necessidade de configuração adicional.
-5 - Desdobramento simplificado: Facilita a publicação e atualização de aplicativos diretamente, 
-sem precisar passar pelo processo tradicional de envio para as lojas de aplicativos.
+5 - Desdobramento simplificado: Facilita a publicação e atualização de aplicativos diretamente, sem precisar passar pelo processo tradicional de envio para as lojas de aplicativos.
 
 -------------------------------------------------------------
 
-PROVIDER
-
-// Provider é um componente que permite compartilhar dados ou funcionalidades entre diferentes partes da aplicação 
-sem precisar passar essas informações através de props manualmente.
-
--------------------------------------------------------------
-
-AXIOS   
-
--> API de requisições HTTP
+AXIOS   -> API de requisições HTTP
 
 ------ expo install axios
 
-// DEIXAR O BACKEND em start
-
+// deixar o backend em start
 // para rodar em desenvolvimento precisa ser assim:
 // react-native nao deixa usar o localhost http
 // digitar no terminal ipconfig
@@ -110,4 +99,45 @@ AXIOS
 
 -------------------------------------------------------------
 
-useEffect  - ciclo de vida
+
+PROVIDER
+
+// Provider é um componente que permite compartilhar dados ou funcionalidades entre diferentes partes da aplicação 
+sem precisar passar essas informações através de props manualmente.
+
+
+USE-STATE   - ciclo de vida
+
+// Um hook que permite adicionar e gerenciar estado em componentes funcionais. 
+// Ele retorna um valor de estado e uma função para atualizá-lo.
+
+
+USE-EFFECT
+
+// Um hook que permite realizar efeitos colaterais em componentes, como chamadas de API ou manipulação do DOM. 
+// É executado após a renderização do componente e pode ser configurado para rodar em mudanças específicas de estado ou props.
+
+
+USE-CONTEXT
+
+// useContext é um hook do React que permite acessar valores de um contexto sem precisar passar props manualmente. 
+// Ele facilita a comunicação entre componentes em diferentes níveis da árvore de componentes.
+
+
+GENERIC
+
+// No TypeScript, os generics (ou genéricos) são uma forma de definir tipos que podem ser usados de forma flexível em funções, 
+// classes ou interfaces. 
+// O uso de <> permite que você especifique um tipo que será usado em uma determinada estrutura, sem perder a segurança de tipos.
+
+
+ESTADOS
+
+// Em componentes funcionais do React, o estado refere-se a dados que podem mudar ao longo do tempo e que 
+// influenciam a renderização do componente. O hook useState é utilizado para gerenciar esse estado.
+
+
+HOOKS
+
+// Um "hook" no React é uma função que permite que você use recursos de estado e outras funcionalidades do React em componentes funcionais. 
+// Hooks foram introduzidos no React 16.8 para tornar a lógica do componente mais reutilizável e acessível.

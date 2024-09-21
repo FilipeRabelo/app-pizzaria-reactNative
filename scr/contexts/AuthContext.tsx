@@ -13,9 +13,9 @@ import { api } from '../services/api';
 type AuthContextData = {                                          // informações q o context vai ter como padrão
   user: UserProps,
   isAuthenticated: boolean,                                       // para saber se o user esta logado
-  signIn: (credenciais: SignInProps) => Promise<void>,
   loadingAuth: boolean,                                           // useState
   loading: boolean,                                               // useState   
+  signIn: (credenciais: SignInProps) => Promise<void>,
   signOut: () => Promise<void>,
 }
 
@@ -27,7 +27,6 @@ type UserProps = {                                                // tipando inf
 }
 
 type AuthProviderProps = {                                        // ReactNode pata tipar o children do authProvider
-
   children: ReactNode;
 }
 
@@ -142,7 +141,7 @@ export function AuthProvider({ children }: AuthProviderProps) {   // AuthProvide
 
     await AsyncStorage.clear()         // PROMISSE -- para limpar o AsyncStorage
 
-      .then(() => {                     // tudo volta a ser vazio e desloga o user
+      .then(() => {                    // tudo volta a ser vazio e desloga o user
 
         setUser({
           id: '',

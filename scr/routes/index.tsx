@@ -30,5 +30,3 @@ function Routes() {                                              // quem vai dis
 }
 
 export default Routes;
-
-

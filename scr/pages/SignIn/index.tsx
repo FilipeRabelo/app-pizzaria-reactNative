@@ -1,7 +1,6 @@
 
 import React, { useState, useContext } from "react";
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-
 import { AuthContext } from '../../contexts/AuthContext'
 
 // component
@@ -33,23 +32,24 @@ export default function SignIn() {
       />
 
       <View style={styles.inputContainer}>
+
         <TextInput
           placeholder="Digite seu e-mail"
           value={email}                                 // TODA VEZ Q DIGITAR ALGO NO INPUT CHAMA O onChargeText
-          onChangeText={setEmail}                       // onChargeText pega e coloca dentro do useState
-          // onChangeText={(text) => setEmail}  
           style={styles.input}
           placeholderTextColor={'#848484'}
+          onChangeText={setEmail}                       // onChargeText pega e coloca dentro do useState
+          // onChangeText={(text) => setEmail}  
         />
 
         <TextInput
           placeholder="Digite sua senha"
           secureTextEntry={true}                        // PARA MASCARAR A SENHA
           value={password}                              // TODA VEZ Q DIGITAR ALGO NO INPUT CHAMA O onChargeText
-          onChangeText={setPassword}                    // onChargeText pega e coloca dentro do useState
-          // onChangeText={(text) => setPassword}
           style={styles.input}
           placeholderTextColor={'#848484'}
+          onChangeText={setPassword}                    // onChargeText pega e coloca dentro do useState
+          // onChangeText={(text) => setPassword}
         />
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
@@ -97,10 +97,10 @@ const styles = StyleSheet.create({
 
   input: {
     width: '95%',
-    height: 45,
+    height: 60,
     backgroundColor: '#101026',
+    borderRadius: 6,
     marginBottom: 10,
-    borderRadius: 8,
     paddingHorizontal: 8,
     color: '#fff',
     fontWeight: 'bold',
@@ -108,13 +108,12 @@ const styles = StyleSheet.create({
 
   button: {
     width: '95%',
-    height: 40,
-    // backgroundColor: "#3fffa3",
-    borderRadius: 8,
+    height: 50,
+    borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 8,
-    backgroundColor: "#39FF14",
+    backgroundColor: "#0bd90b",
   },
 
   buttonText: {
