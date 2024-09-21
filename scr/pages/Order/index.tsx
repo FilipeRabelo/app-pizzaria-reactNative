@@ -2,24 +2,87 @@
 // PAGE ORDER
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { useRoute, RouteProp } from "@react-navigation/native"                           // para pegar os dados digitados 
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native"                           // para pegar os dados digitados 
 import { Feather } from '@expo/vector-icons'
+import { api } from '../../services/api'
 
 type RouteDetailParams = {
 
   Order: {
     number: number | string,
-    nameClient: string,
+    name: string,
     orderId: string
   }
 }
 
 type OrderRouteProps = RouteProp<RouteDetailParams, 'Order'>;
 
+
 export default function Order() {
 
   const route = useRoute<OrderRouteProps>();
+  const navigation = useNavigation();
+  
+
+  async function handleCloseOrder() {                             // funcao para deletar
+
+    Alert.alert(
+
+      "Confirmar Exclusão",
+      "Você tem certeza que deseja apagar este pedido?",
+
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancelado"),
+          style: "cancel"
+        },
+        
+        {
+          text: "Sim",          
+          onPress: async () => {
+
+            try {
+
+              await api.delete('/order', {
+                params: {
+                  order_id: route.params?.orderId
+                }
+              });
+
+              navigation.goBack(); 
+                                             // Voltar para a tela anterior
+            } catch (err) {
+              console.log(err);
+              alert('Erro ao deletar mesa')
+            }
+
+          }
+        }
+      ]
+
+    );
+
+  }
+
+  // async function handleCloseOrder() {                          // funcao para deletar
+
+  //   try {
+  //     await api.delete('/order', {
+  //       params:{
+  //         order_id: route.params?.orderId
+  //       }
+  //     })
+
+  //     navigation.goBack()                                      // para voltar uma tela, caso tenha deletado a order
+      
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  
+  // }
+
 
   return (
     <View style={styles.container}>
@@ -28,11 +91,11 @@ export default function Order() {
 
         <View style={styles.headerName}>
           <Text style={styles.numberTable}>Mesa:  {route.params.number}</Text>
-          <Text style={styles.nameClient}>{route.params.nameClient ? '|  ' + route.params.nameClient : ''}</Text>
+          <Text style={styles.nameClient}>{route.params.name ? '|  ' + route.params.name : ''}</Text>
         </View>
 
-        <TouchableOpacity>
-          <Feather name={'trash-2'} size={28} color={'#DC143C'} />
+        <TouchableOpacity onPress={handleCloseOrder}>
+          <Feather name='trash-2' size={35} color={'#DC143C'} />
         </TouchableOpacity>
 
       </View>
@@ -51,7 +114,7 @@ export default function Order() {
         <Text style={styles.qtdText}>Quantidade</Text>
 
         <TextInput
-          style={[styles.input, {width: '60%', textAlign: 'center'}]}
+          style={[styles.input, { width: '60%', textAlign: 'center' }]}
           placeholderTextColor={'#f0f0f0'}
           keyboardType='numeric'                                           // teclado numerico
           value='1'
@@ -144,14 +207,14 @@ const styles = StyleSheet.create({
 
   // view actions
 
-  actions:{
+  actions: {
     marginTop: 6,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between'
   },
 
-  buttonAdd:{
+  buttonAdd: {
     backgroundColor: "#3fd1ff",
     borderRadius: 6,
     height: 45,
@@ -162,14 +225,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  button:{
+  button: {
     backgroundColor: "#0bd90b",
     borderRadius: 6,
     height: 45,
     justifyContent: 'center',
     alignItems: 'center',
     width: '75%',
-    
+
   },
 
   buttonText: {
@@ -178,7 +241,7 @@ const styles = StyleSheet.create({
     color: '#101026',
     borderRadius: 6,
   }
-  
+
 })
 
 // essa pagina precisa ser colcoada dentro do app.routes onde somente user logados podem acessar

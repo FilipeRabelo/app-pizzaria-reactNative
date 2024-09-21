@@ -14,7 +14,7 @@ export type StackParamsList = {                     // undefined para nao recebe
   Dashboard: undefined,
   Order: {
     number: number | string,
-    nameClient: string,
+    name: string,
     orderId: string
   }
 }
