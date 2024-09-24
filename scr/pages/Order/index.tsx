@@ -63,7 +63,7 @@ export default function Order() {
     }
 
     loadInfo();
-  }, [])                // [] array de dependencias
+  }, [])                                                                     // [] array de dependencias
 
 
   // função para deletar
@@ -103,6 +103,11 @@ export default function Order() {
 
   }
 
+
+  function handleChangeCategory(item: CategoryProps){
+
+    setCategorySelected(item);                              // passando p o setCategorySelected o item q recebemos
+  }
 
 
   return (
@@ -168,10 +173,10 @@ export default function Order() {
         animationType='fade'
       >
         
-        <ModalPicker                // componente ModalPicker
-          options={category}                                         // lista de categorias
-          selectedItem={ () => {} }
-          handleCloseModal={ () => setModalCategoryVisible(false)}   // para fechar o modal - 
+        <ModalPicker                                                  // componente ModalPicker
+          options={category}                                          // lista de categorias
+          selectedItem={ handleChangeCategory }                       // chamando a funcao
+          handleCloseModal={ () => setModalCategoryVisible(false) }   // para fechar o modal - 
         />
       </Modal>
 
