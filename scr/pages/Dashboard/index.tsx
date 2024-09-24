@@ -1,11 +1,11 @@
 
 import React, { useState } from "react";
+
 import { SafeAreaView, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
 import { api } from '../../services/api';
-
 
 
 export default function Dashboard() {
@@ -14,32 +14,31 @@ export default function Dashboard() {
 
   const [number, setNumber] = useState('');               
   const [name, setName] = useState('');                                             // o value do textinput vai estar atrelado ao number         
+  
   const [loading, setLoading] = useState(false);                                    // LOADING - estado para controlar o icone de carregamento
 
 
-
-
-  async function openOrder() {                    // FUNCAO ABRIR PEDIDO            // sempre q abir uma mesa chama essa fucnao
+  async function openOrder() {                           // FUNCAO ABRIR PEDIDO     // sempre q abir uma mesa chama essa fucnao
 
     if (number === '') {
       alert("Digite o numero da mesa...");
       return;
     }
 
-    setLoading(true); // Começa o carregamento
+    setLoading(true);                                    // Começa o carregamento
 
     try {
 
-      const response = await api.post('/order', {
+      const response = await api.post('/order', {       // requisicao para cadastrar        
         table: Number(number),
         name: name
       });
 
       console.log(response.data);
+
       navigation.navigate('Order', { number: number, name: name, orderId: response.data.id });     // foi tipado em app.routes.tsx
 
-      // Limpa os campos após o envio
-      setNumber('');
+      setNumber('');                                    // Limpa os campos após o envio
       setName('');
 
     } catch (error) {
@@ -47,13 +46,15 @@ export default function Dashboard() {
       alert("Ocorreu um erro ao abrir a mesa.");
 
     } finally {
-      setLoading(false);                        // Para o carregamento
+      setLoading(false);                                // Para o carregamento
     }
+
   }
 
 
 
   return (
+
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Novo pedido</Text>
 
@@ -81,8 +82,11 @@ export default function Dashboard() {
           <Text style={styles.buttonText}>Abrir Mesa</Text>
         )}
       </TouchableOpacity>
+
     </SafeAreaView>
+
   );
+  
 }
 
 const styles = StyleSheet.create({

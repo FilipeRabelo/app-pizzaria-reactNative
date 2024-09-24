@@ -1,0 +1,13 @@
+[
+  { "id": "76776fc9-3d52-4755-9e7f-22a6a46f7c32", "name": "Bebidas" },
+  { "id": "9eafec50-1c34-48f7-a7ce-c95f809ea553", "name": "Pizzas" },
+  { "id": "554b99ff-11d8-4fe5-a574-66f4b4a393ea", "name": "Sobremessa" },
+  { "id": "0ecfa0f2-acb2-4907-8cdd-7b852d248ab7", "name": "Hambúrguer " },
+  { "id": "73dc5dcb-ecd0-4bec-95f4-3da7fb7c14ce", "name": "Sorvete" },
+  { "id": "8b95a9c8-e4a8-4a0a-934d-6e8d03b45ee1", "name": "Espetos" },
+  { "id": "42a53881-4c1d-4a73-b814-d2a1750b8b53", "name": "Picolé " },
+  { "id": "b08820f4-63a5-4a7e-9bfc-615aac14e969", "name": "Acaí" },
+  { "id": "30413476-c88f-4546-a061-0f25e3854488", "name": "Cerveja" },
+  { "id": "150a69b3-c51a-4fbc-99ca-c9207fe3bd21", "name": "Macarrao" },
+  { "id": "daefc539-733e-4c07-afdc-ce435ba8fd66", "name": "teste" }
+]

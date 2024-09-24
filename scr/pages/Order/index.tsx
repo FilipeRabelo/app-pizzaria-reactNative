@@ -1,11 +1,22 @@
 
 // PAGE ORDER
 
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { useRoute, RouteProp, useNavigation } from "@react-navigation/native"                           // para pegar os dados digitados 
-import { Feather } from '@expo/vector-icons'
-import { api } from '../../services/api'
+import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  TextInput, 
+  Alert, 
+  Modal 
+} from 'react-native';
+
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native" ;      // para pegar os dados digitados 
+import { Feather } from '@expo/vector-icons';
+import { api } from '../../services/api';
+import { ModalPicker } from '../../components/ModalPicker'
+
 
 type RouteDetailParams = {
 
@@ -16,6 +27,11 @@ type RouteDetailParams = {
   }
 }
 
+export type CategoryProps = {
+  id: string,
+  name: string,
+}
+
 type OrderRouteProps = RouteProp<RouteDetailParams, 'Order'>;
 
 
@@ -23,65 +39,70 @@ export default function Order() {
 
   const route = useRoute<OrderRouteProps>();
   const navigation = useNavigation();
-  
 
-  async function handleCloseOrder() {                             // funcao para deletar
+  // estados
+
+  const [category, setCategory] = useState<CategoryProps[] | []>([]);        // armazena a lista de todas as categorias - array
+  const [categorySelected, setCategorySelected] = useState<CategoryProps>()  // armazena qual esta selecionada 
+  const [modalCategoryVisible, setModalCategoryVisible] = useState(false)    // modal comeca fechado ate clicar no bortao
+
+  const [amount, setAmount] = useState('1');                                 // estado q vai controlar a quantidade escolhida
+
+
+  // qndo o app for carregado ele vai executar o que estiver dentro do useEffect
+  // requisicao http
+
+  useEffect(() => {                                                          // buscar as categorias com o useEffect - 
+
+    async function loadInfo() {                                              // Código a ser executado
+
+      const response = await api.get('/category');                           // requisição para buscar e listar as categoria
+      setCategory(response.data)                                             // passando a requisição para o setState
+      setCategorySelected(response.data[0])                                  // pegando a primeira posição do array para ficar selecionada
+      // console.log(response.data)
+    }
+
+    loadInfo();
+  }, [])                // [] array de dependencias
+
+
+  // função para deletar
+  async function handleCloseOrder() {                                        
 
     Alert.alert(
-
       "Confirmar Exclusão",
       "Você tem certeza que deseja apagar este pedido?",
-
       [
         {
           text: "Cancelar",
           onPress: () => console.log("Cancelado"),
           style: "cancel"
         },
-        
         {
           text: "Sim",          
           onPress: async () => {
 
             try {
 
-              await api.delete('/order', {
+              await api.delete('/order', {                         // requisicao para deletar
                 params: {
                   order_id: route.params?.orderId
                 }
               });
 
-              navigation.goBack(); 
-                                             // Voltar para a tela anterior
+              navigation.goBack();                                 // Voltar para a tela anterior
+                                            
             } catch (err) {
               console.log(err);
               alert('Erro ao deletar mesa')
             }
-
           }
         }
       ]
-
     );
 
   }
 
-  // async function handleCloseOrder() {                          // funcao para deletar
-
-  //   try {
-  //     await api.delete('/order', {
-  //       params:{
-  //         order_id: route.params?.orderId
-  //       }
-  //     })
-
-  //     navigation.goBack()                                      // para voltar uma tela, caso tenha deletado a order
-      
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  
-  // }
 
 
   return (
@@ -100,10 +121,16 @@ export default function Order() {
 
       </View>
 
+      {/* categorias */}
+      {category.length !== 0 && (
 
-      <TouchableOpacity style={styles.input} >
-        <Text style={{ color: '#FFF', fontSize: 18 }}>Pizzas</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.input} onPress={ () => setModalCategoryVisible(true) }>
+          <Text style={{ color: '#FFF', fontSize: 18 }}>
+            {categorySelected?.name}
+          </Text>
+        </TouchableOpacity>
+
+      )}
 
       <TouchableOpacity style={styles.input}>
         <Text style={{ color: '#FFF', fontSize: 18 }}>Pizza de calabresa</Text>
@@ -116,8 +143,9 @@ export default function Order() {
         <TextInput
           style={[styles.input, { width: '60%', textAlign: 'center' }]}
           placeholderTextColor={'#f0f0f0'}
-          keyboardType='numeric'                                           // teclado numerico
-          value='1'
+          keyboardType='numeric'                                                  // teclado numerico
+          value={amount}                                                          // useStates para salvar a quantidade
+          onChangeText={setAmount}                                                // useStates
         />
       </View>
 
@@ -134,9 +162,27 @@ export default function Order() {
 
       </View>
 
+      <Modal
+        transparent={true}
+        visible={modalCategoryVisible}
+        animationType='fade'
+      >
+        
+        <ModalPicker                // componente ModalPicker
+          options={category}                                         // lista de categorias
+          selectedItem={ () => {} }
+          handleCloseModal={ () => setModalCategoryVisible(false)}   // para fechar o modal - 
+        />
+      </Modal>
+
     </View>
   )
 }
+
+// preciso tdoas as categorias q tem
+// metodo para fechar o modal
+// e qual esta selecionado
+
 
 const styles = StyleSheet.create({
 
@@ -245,3 +291,23 @@ const styles = StyleSheet.create({
 })
 
 // essa pagina precisa ser colcoada dentro do app.routes onde somente user logados podem acessar
+
+
+
+
+// async function handleCloseOrder() {                          // funcao para deletar
+
+//   try {
+//     await api.delete('/order', {
+//       params:{
+//         order_id: route.params?.orderId
+//       }
+//     })
+
+//     navigation.goBack()                                      // para voltar uma tela, caso tenha deletado a order
+    
+//   } catch (err) {
+//     console.log(err)
+//   }
+
+// }
