@@ -152,7 +152,7 @@ USE-CONTEXT
 
 -----------------------------------------------
 
-GENERIC
+GENERIC - < >
 
 // No TypeScript, os generics (ou genéricos) são uma forma de definir tipos que podem ser usados de forma flexível em funções, 
 // classes ou interfaces. 

@@ -34,7 +34,7 @@ export default function Dashboard() {
         name: name
       });
 
-      console.log(response.data);
+      // console.log(response.data);
 
       navigation.navigate('Order', { number: number, name: name, orderId: response.data.id });     // foi tipado em app.routes.tsx
 

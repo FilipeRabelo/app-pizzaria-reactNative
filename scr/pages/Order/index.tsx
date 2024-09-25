@@ -19,7 +19,6 @@ import { ModalPicker } from '../../components/ModalPicker'
 
 
 type RouteDetailParams = {
-
   Order: {
     number: number | string,
     name: string,
@@ -32,6 +31,11 @@ export type CategoryProps = {
   name: string,
 }
 
+type ProductsProps = {
+  id: string,
+  name: string
+}
+
 type OrderRouteProps = RouteProp<RouteDetailParams, 'Order'>;
 
 
@@ -40,30 +44,57 @@ export default function Order() {
   const route = useRoute<OrderRouteProps>();
   const navigation = useNavigation();
 
-  // estados
+  const [amount, setAmount] = useState('1');                                             // estado q vai controlar a quantidade escolhida
 
-  const [category, setCategory] = useState<CategoryProps[] | []>([]);        // armazena a lista de todas as categorias - array
-  const [categorySelected, setCategorySelected] = useState<CategoryProps>()  // armazena qual esta selecionada 
-  const [modalCategoryVisible, setModalCategoryVisible] = useState(false)    // modal comeca fechado ate clicar no bortao
+  // estados category
 
-  const [amount, setAmount] = useState('1');                                 // estado q vai controlar a quantidade escolhida
+  const [category, setCategory] = useState<CategoryProps[] | []>([]);                    // armazena a lista de todas as categorias - array
+  const [categorySelected, setCategorySelected] = useState<CategoryProps | undefined>()  // armazena qual categoria esta selecionada 
+  const [modalCategoryVisible, setModalCategoryVisible] = useState(false)                // modal começa fechado ate clicar no botão
 
+  // estados produtos
+
+  const [products, setProducts] = useState<ProductsProps[] | []>([]);
+  const [productSelected, setProductSelected] = useState<ProductsProps | undefined>();
+  const [modalProductVisible, setModalProductVisible] = useState(false)
+  
 
   // qndo o app for carregado ele vai executar o que estiver dentro do useEffect
-  // requisicao http
-
-  useEffect(() => {                                                          // buscar as categorias com o useEffect - 
+  // categorias
+  useEffect(() => {                               // requisicao http         // buscar as categorias com o useEffect - 
 
     async function loadInfo() {                                              // Código a ser executado
 
       const response = await api.get('/category');                           // requisição para buscar e listar as categoria
+     
       setCategory(response.data)                                             // passando a requisição para o setState
       setCategorySelected(response.data[0])                                  // pegando a primeira posição do array para ficar selecionada
       // console.log(response.data)
     }
 
     loadInfo();
+
   }, [])                                                                     // [] array de dependencias
+
+
+  useEffect(() => {
+
+    async function loadProduct(){
+
+      const response = await api.get('/category/product', {
+        params:{
+          category_id: categorySelected?.id                                  // passando o id da categoria selecionada p buscar o id do produto
+        }
+      })
+
+      setProducts(response.data);
+      setProductSelected(response.data[0])
+
+    }
+    
+    loadProduct()
+
+  }, [categorySelected])    // toda vez q a categoria mudar chama esse useEffect
 
 
   // função para deletar
@@ -103,10 +134,15 @@ export default function Order() {
 
   }
 
-
+  // o item é o q esta dento do input de categorias
   function handleChangeCategory(item: CategoryProps){
 
-    setCategorySelected(item);                              // passando p o setCategorySelected o item q recebemos
+    setCategorySelected(item);                              // recebe o item e muda a categoria selecionada - passando p o setCategorySelected o item q recebemos
+  }
+
+  function handleChangeProduct(item: ProductsProps){
+
+    setProductSelected(item)
   }
 
 
@@ -126,10 +162,11 @@ export default function Order() {
 
       </View>
 
-      {/* categorias */}
+
+     
       {category.length !== 0 && (
 
-        <TouchableOpacity style={styles.input} onPress={ () => setModalCategoryVisible(true) }>
+        <TouchableOpacity onPress={() => setModalCategoryVisible(true)} style={styles.input}>
           <Text style={{ color: '#FFF', fontSize: 18 }}>
             {categorySelected?.name}
           </Text>
@@ -137,9 +174,17 @@ export default function Order() {
 
       )}
 
-      <TouchableOpacity style={styles.input}>
-        <Text style={{ color: '#FFF', fontSize: 18 }}>Pizza de calabresa</Text>
-      </TouchableOpacity>
+
+      {products.length !== 0 &&(    // qndo o tamanho for diferente de 0 entao && ... mostra o produto
+
+        <TouchableOpacity onPress={() => setModalProductVisible(true)} style={styles.input}>
+          <Text style={{ color: '#FFF', fontSize: 18 }}>
+            {productSelected?.name}
+          </Text>
+        </TouchableOpacity>
+
+      )}
+      
 
 
       <View style={styles.qtdContainer}>
@@ -175,9 +220,23 @@ export default function Order() {
         
         <ModalPicker                                                  // componente ModalPicker
           options={category}                                          // lista de categorias
-          selectedItem={ handleChangeCategory }                       // chamando a funcao
+          selectedItem={ handleChangeCategory }                       // recebe o item e chama a funcao para selecionar a categoria
           handleCloseModal={ () => setModalCategoryVisible(false) }   // para fechar o modal - 
         />
+      </Modal>
+
+      <Modal 
+        transparent={true}
+        visible={modalProductVisible}
+        animationType='fade'
+      >
+
+        <ModalPicker                                                  // componente ModalPicker
+          options={products}                                          // lista de categorias
+          selectedItem={handleChangeProduct}                       // recebe o item e chama a funcao para selecionar a categoria
+          handleCloseModal={() => setModalProductVisible(false)}   // para fechar o modal - 
+        />
+
       </Modal>
 
     </View>

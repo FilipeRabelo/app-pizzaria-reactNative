@@ -21,15 +21,18 @@ interface ModalPickerProps {
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
 
+// options é a lista de categorias
 export function ModalPicker({ options, selectedItem, handleCloseModal }: ModalPickerProps) {
 
   function onPressItem(item: CategoryProps) {
 
     // console.log(item)
-    selectedItem(item);                              // vai passar p a propriedade selectedItem qual é o item
-    handleCloseModal();                              // vai fechar omodal
+    selectedItem(item);                              // vai passar p a propriedade selectedItem qual é o item ex: sobremessa, pizza, etc
+    handleCloseModal();                              // vai fechar o modal
   };
 
+
+  // {option} mapeia todas as categorias
   const option = options.map((item, index) => (      // map para percorrer a lista
 
     <TouchableOpacity key={index} onPress={() => onPressItem(item)} style={styles.option}>
@@ -40,15 +43,16 @@ export function ModalPicker({ options, selectedItem, handleCloseModal }: ModalPi
 
   ))
 
-  // {option} mapeia todas as categorias
-
+  
   return (
 
     <TouchableOpacity onPress={handleCloseModal} style={styles.container}>
       <View style={styles.content}>
+
         <ScrollView showsVerticalScrollIndicator={false}>
           {option}
         </ScrollView>
+
       </View>
     </TouchableOpacity>
   )
@@ -56,6 +60,8 @@ export function ModalPicker({ options, selectedItem, handleCloseModal }: ModalPi
 };
 
 // showsVerticalScrollIndicator={false} - > para tirar a barra de rolagem
+
+
 
 const styles = StyleSheet.create({
 
