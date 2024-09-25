@@ -158,9 +158,31 @@ export default function Order() {
     setProductSelected(item);
   }
 
-  async function handleAddItem(){
 
-    console.log('clicou')
+  // adicionando um produto nessa mesa
+  async function handleAddItem() {
+
+    const response = await api.post('/order/add', {        // adicionando item a mesa
+
+      order_id: route.params?.orderId,                     // recebendo o id da order
+      product_id: productSelected?.id,
+      amount: Number(amount)
+    })
+
+    console.log(JSON.stringify(response.data, null, 2))
+
+    let data = {                                           // objeto
+
+      id: response.data.id,
+      product_id: productSelected?.id as string,
+      name: productSelected?.name as string,
+      amount: amount
+    }
+
+    // passando o objeto para a useState - setItems()
+
+    setItems(oldArray => [...oldArray, data])              // oldArray - pegando tudo que ja tem e adicionando data
+
   }
 
 
@@ -170,17 +192,20 @@ export default function Order() {
     <View style={styles.container}>
 
       <View style={styles.header}>
-
+        
         <View style={styles.headerName}>
           <Text style={styles.numberTable}>Mesa: {route.params.number}</Text>
           <Text style={styles.nameClient}>{route.params.name ? "|  " + route.params.name : ""} </Text>
         </View>
 
-        <TouchableOpacity onPress={handleCloseOrder}>
-          <Feather name="trash-2" size={35} color={"#DC143C"} />
-        </TouchableOpacity>
+        {items.length === 0 && (
+          <TouchableOpacity onPress={handleCloseOrder}>
+            <Feather name="trash-2" size={35} color={"#DC143C"} />
+          </TouchableOpacity>
+        )}
 
       </View>
+
 
       {category.length !== 0 && (
 
@@ -188,7 +213,7 @@ export default function Order() {
           onPress={() => setModalCategoryVisible(true)}
           style={styles.input}
         >
-          <Text style={{ color: "#FFF", fontSize: 18 }}>
+          <Text style={{ color: "#FFF", fontSize: 18, textTransform: 'capitalize' }}>
             {categorySelected?.name}
           </Text>
         </TouchableOpacity>
@@ -202,7 +227,7 @@ export default function Order() {
           onPress={() => setModalProductVisible(true)}
           style={styles.input}
         >
-          <Text style={{ color: "#FFF", fontSize: 18 }}>
+          <Text style={{ color: "#FFF", fontSize: 18, textTransform: 'capitalize' }}>
             {productSelected?.name}
           </Text>
         </TouchableOpacity>
