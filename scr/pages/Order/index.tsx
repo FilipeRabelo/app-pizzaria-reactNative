@@ -17,6 +17,11 @@ import {
   FlatList
 } from "react-native";
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'   // para navegar ate a pagina de FinishOrder
+import { StackParamsList } from '../../routes/app.routes'                    // trazendo as rotas para trazer a FinihiOrder
+// import FinishOrder from '../../pages/FinishOrder'
+
+
 
 type RouteDetailParams = {
   Order: {
@@ -52,36 +57,29 @@ type OrderRouteProps = RouteProp<RouteDetailParams, "Order">;
 export default function Order() {
 
   const route = useRoute<OrderRouteProps>();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();   // passando as tipagens
 
   // estados category
-
   const [category, setCategory] = useState<CategoryProps[] | []>([]);                       // armazena a lista de todas as categorias - array
   const [categorySelected, setCategorySelected] = useState<CategoryProps | undefined>();    // armazena qual categoria esta selecionada
   const [modalCategoryVisible, setModalCategoryVisible] = useState(false);                  // modal começa fechado ate clicar no botão
 
   // estados produtos
-
   const [products, setProducts] = useState<ProductsProps[] | []>([]);
   const [productSelected, setProductSelected] = useState<ProductsProps | undefined>();
   const [modalProductVisible, setModalProductVisible] = useState(false);
 
   // estado que controla a quantidade escolhida
+  const [amount, setAmount] = useState("1");                                              // estado q vai controlar a quantidade escolhida
 
-  const [amount, setAmount] = useState("1"); // estado q vai controlar a quantidade escolhida
+  // estado que controla os items adicionados [] list
+  const [items, setItems] = useState<ItemProps[]>([]);                                    // lista dos produtos selecionados
 
-  // estados items adicionados [] list
 
-  const [items, setItems] = useState<ItemProps[]>([]); // lista dos produtos selecionados
-
-  // qndo o app for carregado ele vai executar o que estiver dentro do useEffect
-  // categorias
-
-  useEffect(() => {
-    // requisicao http                                                                    // buscar as categorias com o useEffect -
+  // categorias // qndo o app for carregado ele vai executar o que estiver dentro do useEffect
+  useEffect(() => {                                                                        // buscar as categorias com o useEffect -                                                                 
 
     async function loadInfo() {
-
       const response = await api.get("/category");                                        // requisição para buscar e listar as categoria
 
       setCategory(response.data);                                                         // passando a requisição para o setState
@@ -95,7 +93,6 @@ export default function Order() {
   useEffect(() => {
 
     async function loadProduct() {
-
       const response = await api.get("/category/product", {
         params: {
           category_id: categorySelected?.id,                            // passando o id da categoria selecionada p buscar o id do produto
@@ -110,13 +107,11 @@ export default function Order() {
   }, [categorySelected]);                                               // toda vez q a categoria mudar chama esse useEffect
 
 
-
-
-  // função para deletar
+  // função para deletar a mesa
   async function handleCloseOrder() {
     Alert.alert(
       "Confirmar Exclusão",
-      "Você tem certeza que deseja apagar este pedido?",
+      "Você tem Certeza que Deseja FECHAR essa Mesa?",
       [
         {
           text: "Cancelar",
@@ -125,6 +120,7 @@ export default function Order() {
         },
         {
           text: "Sim",
+
           onPress: async () => {
             try {
               await api.delete("/order", {
@@ -140,11 +136,11 @@ export default function Order() {
               alert("Erro ao deletar mesa");
             }
           },
+
         },
       ]
     );
   }
-
 
 
   // o item é o q esta dento do input de categorias
@@ -153,23 +149,23 @@ export default function Order() {
     setCategorySelected(item);                            // recebe o item e muda a categoria selecionada - passando p o setCategorySelected o item q recebemos
   }
 
+
   function handleChangeProduct(item: ProductsProps) {
 
     setProductSelected(item);
   }
 
 
-  // adicionando um produto nessa mesa
+  // funcao para adicionar um produto na mesa
   async function handleAddItem() {
 
     const response = await api.post('/order/add', {        // adicionando item a mesa
-
       order_id: route.params?.orderId,                     // recebendo o id da order
       product_id: productSelected?.id,
       amount: Number(amount)
     })
 
-    console.log(JSON.stringify(response.data, null, 2))
+    // console.log(JSON.stringify(response.data, null, 2))
 
     let data = {                                           // objeto
 
@@ -180,10 +176,36 @@ export default function Order() {
     }
 
     // passando o objeto para a useState - setItems()
-
     setItems(oldArray => [...oldArray, data])              // oldArray - pegando tudo que ja tem e adicionando data
-
   }
+
+
+  // funcao para deletar um item da lista dentro da mesa aberta
+  async function handleDeleteItem(item_id: string) {
+
+    await api.delete('/order/remove', {                   // deletando o item da lista
+      params: {
+        item_id: item_id
+      }
+    });
+
+    // apos remover o item da api, removemos esse item da lista e atualizamos a interface
+    let removeItem = items.filter(item => {               // filtrar e remover o item e devolver todos exceto o q removeu
+
+      return (item.id !== item_id);                        // retorna os item q sao diferentes do id do item q removeu
+    })
+
+    // retorna o array sem o item excluido
+    setItems(removeItem);                                 // passando p o array de item a nova lista sem o id excluido
+  }
+
+
+  // funcao para ir ate a tela de FinishOrder
+  function handleFinishOrder(){
+
+    navigation.navigate('FinishOrder');
+  }
+
 
 
 
@@ -192,7 +214,7 @@ export default function Order() {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        
+
         <View style={styles.headerName}>
           <Text style={styles.numberTable}>Mesa: {route.params.number}</Text>
           <Text style={styles.nameClient}>{route.params.name ? "|  " + route.params.name : ""} </Text>
@@ -234,6 +256,7 @@ export default function Order() {
 
       )}
 
+
       <View style={styles.qtdContainer}>
 
         <Text style={styles.qtdText}>Quantidade</Text>
@@ -248,6 +271,7 @@ export default function Order() {
 
       </View>
 
+
       <View style={styles.actions}>
 
         <TouchableOpacity onPress={handleAddItem} style={styles.buttonAdd}>
@@ -257,11 +281,14 @@ export default function Order() {
         <TouchableOpacity
           style={[styles.button, { opacity: items.length === 0 ? 0.3 : 1 }]}  // deixando o botao apagando qndo nao tiver item na lista
           disabled={items.length === 0}
+          onPress={handleFinishOrder}
         >
           <Text style={styles.buttonText}>Avançar</Text>
         </TouchableOpacity>
 
       </View>
+
+
 
       <FlatList
 
@@ -271,8 +298,9 @@ export default function Order() {
         keyExtractor={(item) => item.id}                                    // keyExtractor qual é o id de cada item - propreidade
 
         // renderizar esse component - recebr a propriedade data com os tipos - ver compoenntes
-        renderItem={({ item }) => <ListItem data={item} />}                  // component separado
+        renderItem={({ item }) => <ListItem data={item} deleteItem={handleDeleteItem} />}                  // component separado
       />
+
 
       <Modal
         transparent={true}
@@ -286,6 +314,7 @@ export default function Order() {
         />
       </Modal>
 
+
       <Modal
         transparent={true}
         visible={modalProductVisible}
@@ -297,8 +326,11 @@ export default function Order() {
           handleCloseModal={() => setModalProductVisible(false)}              // para fechar o modal -
         />
       </Modal>
+
     </View>
+
   );
+
 }
 
 // preciso tdoas as categorias q tem
@@ -410,6 +442,10 @@ const styles = StyleSheet.create({
 
 // essa pagina precisa ser colcoada dentro do app.routes onde somente user logados podem acessar
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // async function handleCloseOrder() {                          // funcao para deletar
 
 //   try {
@@ -426,3 +462,113 @@ const styles = StyleSheet.create({
 //   }
 
 // }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { api } from "../../services/api";
+// import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
+// import { Feather } from "@expo/vector-icons";
+// import { ModalPicker } from "../../components/ModalPicker";
+// import { ListItem } from '../../components/ListItem';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   TextInput,
+//   Alert,
+//   Modal,
+//   FlatList
+// } from "react-native";
+
+// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+// import { StackParamsList } from '../../routes/app.routes';
+
+// type RouteDetailParams = {
+//   Order: {
+//     number: number | string;
+//     name: string;
+//     orderId: string;
+//   };
+// };
+
+// export default function Order() {
+//   const route = useRoute<RouteDetailParams>();
+//   const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
+
+//   const [isCancelConfirmed, setIsCancelConfirmed] = useState(false);
+
+//   useEffect(() => {
+//     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+//       // Bloqueia a navegação se o pedido não foi cancelado
+//       if (!isCancelConfirmed) {
+//         e.preventDefault();
+
+//         Alert.alert(
+//           "Cancelar Pedido",
+//           "Você tem certeza que deseja cancelar o pedido?",
+//           [
+//             {
+//               text: "Não",
+//               style: "cancel",
+//             },
+//             {
+//               text: "Sim",
+//               onPress: () => {
+//                 setIsCancelConfirmed(true);
+//                 navigation.dispatch(e.data.action); // Prossegue com a navegação
+//               },
+//             },
+//           ]
+//         );
+//       }
+//     });
+
+//     return unsubscribe; // Remove o listener ao desmontar o componente
+//   }, [navigation, isCancelConfirmed]);
+
+//   async function handleCloseOrder() {
+//     Alert.alert(
+//       "Confirmar Exclusão",
+//       "Você tem certeza que deseja FECHAR essa Mesa?",
+//       [
+//         {
+//           text: "Cancelar",
+//           onPress: () => console.log("Cancelado"),
+//           style: "cancel",
+//         },
+//         {
+//           text: "Sim",
+//           onPress: async () => {
+//             try {
+//               await api.delete("/order", {
+//                 params: {
+//                   order_id: route.params?.orderId,
+//                 },
+//               });
+//               navigation.goBack();
+//             } catch (err) {
+//               console.log(err);
+//               alert("Erro ao deletar mesa");
+//             }
+//           },
+//         },
+//       ]
+//     );
+//   }
+
+//   // O resto do seu código...
+
+//   return (
+//     <View style={styles.container}>
+//       {/* Seu JSX aqui */}
+//     </View>
+//   );
+// }
+
+// // Estilos e outras funções...

@@ -1,6 +1,10 @@
 
 // qndo nao for um component nao precisa de ser .tsx - pode ser .ts
 
+-------------------------------------------------------------
+
+SEMPRE Q FIZER UMA TELA É PRECISO CHAMAR ELA NO APP.ROUTES.TSX
+
 --------------------------------------------------------------
 
 -- npm install -g expo

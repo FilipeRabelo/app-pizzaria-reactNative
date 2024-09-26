@@ -10,15 +10,17 @@ interface ItemProps {
     product_id: string;
     name: string;
     amount: string | number;
-  }
+  };
+
+  deleteItem: (item_id: string) => void;
+
 }
 
-export function ListItem({ data }: ItemProps) {
+export function ListItem({ data, deleteItem }: ItemProps) {
 
-  function handleDeleteItem() {
+  function handleDeleteItem() {                               // passa para a pagina de order
 
-    console.log("clicou")
-
+    deleteItem(data.id)
   }
 
   return (
