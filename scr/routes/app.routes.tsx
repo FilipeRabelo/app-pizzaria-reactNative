@@ -10,17 +10,21 @@ import Dashboard from "../pages/Dashboard";
 import Order from "../pages/Order";
 import FinishOrder from "../pages/FinishOrder";
 
-export type StackParamsList = {                     // undefined para nao receber parametros
+export type StackParamsList = {                     
 
-  Dashboard: undefined,
+  Dashboard: undefined,                             // undefined para nao receber parametros
 
   Order: {
     number: number | string,                        // componentes chamados - pages chamadas
     name: string,
-    orderId: string
+    order_id: string
   },
 
-  FinishOrder: undefined
+  FinishOrder: {
+    number: number | string,                        // numero da mesa
+    order_id: string,
+    name: string 
+  }
 }
 
 const Stack = createNativeStackNavigator<StackParamsList>();   // <> generic - forma de definir tipos que podem ser usados de forma flexível
@@ -53,8 +57,8 @@ function AppRoutes() {
             backgroundColor: '#1d1d2e'
           },
           headerTintColor: '#FFF',
-          headerBackTitle: 'Voltar', // Título que aparece na seta de voltar
-          headerBackTitleVisible: true, // Exibe o título na seta (em iOS)
+          headerBackTitle: 'Voltar',                    // Título que aparece na seta de voltar
+          headerBackTitleVisible: true,                 // Exibe o título na seta (em iOS)
         }}             
       />
 

@@ -1,0 +1,174 @@
+// essa pagina precisa ser colcoada dentro do app.routes onde somente user logados podem acessar
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// async function handleCloseOrder() {                          // funcao para deletar
+
+//   try {
+//     await api.delete('/order', {
+//       params:{
+//         order_id: route.params?.orderId
+//       }
+//     })
+
+//     navigation.goBack()                                      // para voltar uma tela, caso tenha deletado a order
+
+//   } catch (err) {
+//     console.log(err)
+//   }
+
+// }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { api } from "../../services/api";
+// import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
+// import { Feather } from "@expo/vector-icons";
+// import { ModalPicker } from "../../components/ModalPicker";
+// import { ListItem } from '../../components/ListItem';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   TextInput,
+//   Alert,
+//   Modal,
+//   FlatList
+// } from "react-native";
+
+// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+// import { StackParamsList } from '../../routes/app.routes';
+
+// type RouteDetailParams = {
+//   Order: {
+//     number: number | string;
+//     name: string;
+//     orderId: string;
+//   };
+// };
+
+// export default function Order() {
+//   const route = useRoute<RouteDetailParams>();
+//   const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
+
+//   const [isCancelConfirmed, setIsCancelConfirmed] = useState(false);
+
+//   useEffect(() => {
+//     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+//       // Bloqueia a navegação se o pedido não foi cancelado
+//       if (!isCancelConfirmed) {
+//         e.preventDefault();
+
+//         Alert.alert(
+//           "Cancelar Pedido",
+//           "Você tem certeza que deseja cancelar o pedido?",
+//           [
+//             {
+//               text: "Não",
+//               style: "cancel",
+//             },
+//             {
+//               text: "Sim",
+//               onPress: () => {
+//                 setIsCancelConfirmed(true);
+//                 navigation.dispatch(e.data.action); // Prossegue com a navegação
+//               },
+//             },
+//           ]
+//         );
+//       }
+//     });
+
+//     return unsubscribe; // Remove o listener ao desmontar o componente
+//   }, [navigation, isCancelConfirmed]);
+
+//   async function handleCloseOrder() {
+//     Alert.alert(
+//       "Confirmar Exclusão",
+//       "Você tem certeza que deseja FECHAR essa Mesa?",
+//       [
+//         {
+//           text: "Cancelar",
+//           onPress: () => console.log("Cancelado"),
+//           style: "cancel",
+//         },
+//         {
+//           text: "Sim",
+//           onPress: async () => {
+//             try {
+//               await api.delete("/order", {
+//                 params: {
+//                   order_id: route.params?.orderId,
+//                 },
+//               });
+//               navigation.goBack();
+//             } catch (err) {
+//               console.log(err);
+//               alert("Erro ao deletar mesa");
+//             }
+//           },
+//         },
+//       ]
+//     );
+//   }
+
+//   // O resto do seu código...
+
+//   return (
+//     <View style={styles.container}>
+//       {/* Seu JSX aqui */}
+//     </View>
+//   );
+// }
+
+// // Estilos e outras funções...
+
+
+
+
+
+
+// fechamento
+
+  // // função para deletar a mesa
+  // async function handleCloseOrder() {
+  //   Alert.alert(
+  //     "Confirmar Exclusão",
+  //     "Você tem Certeza que Deseja FECHAR essa Mesa?",
+  //     [
+  //       {
+  //         text: "Cancelar",
+  //         onPress: () => console.log("Cancelado"),
+  //         style: "cancel",
+  //       },
+  //       {
+  //         text: "Sim",
+
+  //         onPress: async () => {
+  //           try {
+  //             await api.delete("/order", {
+  //               // requisicao para deletar
+  //               params: {
+  //                 order_id: route.params?.order_id,
+  //               },
+  //             });
+
+  //             navigation.goBack(); // Voltar para a tela anterior
+  //           } catch (err) {
+  //             console.log(err);
+  //             alert("Erro ao deletar mesa");
+  //           }
+  //         },
+
+  //       },
+  //     ]
+  //   );
+  // }

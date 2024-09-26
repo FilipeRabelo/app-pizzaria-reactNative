@@ -1,11 +1,19 @@
 
 import React, { useState } from "react";
-
-import { SafeAreaView, Text, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
+import { 
+  View, 
+  SafeAreaView, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  TextInput, 
+  ActivityIndicator 
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
 import { api } from '../../services/api';
+import Modal from "react-native-modal";
 
 
 export default function Dashboard() {
@@ -17,26 +25,32 @@ export default function Dashboard() {
   
   const [loading, setLoading] = useState(false);                                    // LOADING - estado para controlar o icone de carregamento
 
+  // estado que controla o modal de DIGITE UMA MESA
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
-  async function openOrder() {                           // FUNCAO ABRIR PEDIDO     // sempre q abir uma mesa chama essa fucnao
 
-    if (number === '') {
-      alert("Digite o numero da mesa...");
+  // FUNCAO ABRIR PEDIDO
+  async function openOrder() {                           // sempre q abir uma mesa chama essa fucnao
+
+    // modal de DIGITE UMA MESA
+    if (number === "") {
+
+      setModalMessage("Digite o número da mesa...");
+      setModalVisible(true);
       return;
     }
 
     setLoading(true);                                    // Começa o carregamento
 
     try {
-
-      const response = await api.post('/order', {       // requisicao para cadastrar        
+      const response = await api.post('/order', {       // requisicao para cadastrar  
+              
         table: Number(number),
         name: name
       });
 
-      // console.log(response.data);
-
-      navigation.navigate('Order', { number: number, name: name, orderId: response.data.id });     // foi tipado em app.routes.tsx
+      navigation.navigate('Order', { number: number, name: name, order_id: response.data.id });     // foi tipado em app.routes.tsx
 
       setNumber('');                                    // Limpa os campos após o envio
       setName('');
@@ -48,14 +62,13 @@ export default function Dashboard() {
     } finally {
       setLoading(false);                                // Para o carregamento
     }
-
   }
 
 
 
   return (
-
     <SafeAreaView style={styles.container}>
+
       <Text style={styles.title}>Novo pedido</Text>
 
       <TextInput
@@ -83,13 +96,28 @@ export default function Dashboard() {
         )}
       </TouchableOpacity>
 
-    </SafeAreaView>
 
+
+      {/* Modal personalizado p obrigar a DIGITAR UMA MESA */}
+      <Modal isVisible={isModalVisible} onBackdropPress={() => setModalVisible(false)}>
+        <View style={styles.modalContent}>
+
+          <Text style={styles.modalText}>{modalMessage}</Text>
+
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+            <Text style={styles.modalButtonText}>Fechar</Text>
+          </TouchableOpacity>   
+
+        </View>
+      </Modal>
+
+
+    </SafeAreaView>
   );
-  
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     justifyContent: "center",
@@ -133,7 +161,40 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#101026",
     fontWeight: 'bold',
-  }
+  },
+
+  // modal para obraigar a digitar uma mesa
+
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 6,
+    alignItems: "center",
+  },
+  modalText: {
+    fontSize: 20,
+    marginBottom: 20,
+    fontWeight: "bold",
+  },
+  modalButton: {
+    backgroundColor: "#0bd90b",
+    padding: 10,
+    borderRadius: 6,
+    width: '50%',
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalButtonText: {
+    fontSize: 18,    
+    color: "#000",
+    fontWeight: "bold",
+  },
 });
 
 

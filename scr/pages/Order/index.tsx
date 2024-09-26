@@ -27,7 +27,7 @@ type RouteDetailParams = {
   Order: {
     number: number | string;
     name: string;
-    orderId: string;
+    order_id: string;
   };
 };
 
@@ -75,6 +75,10 @@ export default function Order() {
   // estado que controla os items adicionados [] list
   const [items, setItems] = useState<ItemProps[]>([]);                                    // lista dos produtos selecionados
 
+  // estado que controla o modal de fechamento da mesa
+  const [modalCloseOrderVisible, setModalCloseOrderVisible] = useState(false);  // Novo estado para o modal de fechamento
+  const [orderIdToClose, setOrderIdToClose] = useState<string | null>(null);    // Armazena o ID da ordem
+
 
   // categorias // qndo o app for carregado ele vai executar o que estiver dentro do useEffect
   useEffect(() => {                                                                        // buscar as categorias com o useEffect -                                                                 
@@ -107,60 +111,57 @@ export default function Order() {
   }, [categorySelected]);                                               // toda vez q a categoria mudar chama esse useEffect
 
 
-  // função para deletar a mesa
-  async function handleCloseOrder() {
-    Alert.alert(
-      "Confirmar Exclusão",
-      "Você tem Certeza que Deseja FECHAR essa Mesa?",
-      [
-        {
-          text: "Cancelar",
-          onPress: () => console.log("Cancelado"),
-          style: "cancel",
-        },
-        {
-          text: "Sim",
 
-          onPress: async () => {
-            try {
-              await api.delete("/order", {
-                // requisicao para deletar
-                params: {
-                  order_id: route.params?.orderId,
-                },
-              });
+  // Função para abrir o modal de fechamento da mesa
+  function handleCloseOrder() {
 
-              navigation.goBack(); // Voltar para a tela anterior
-            } catch (err) {
-              console.log(err);
-              alert("Erro ao deletar mesa");
-            }
-          },
-
-        },
-      ]
-    );
+    setOrderIdToClose(route.params?.order_id);
+    setModalCloseOrderVisible(true);
   }
+
+  // Função para confirmar o fechamento da mesa com MODAL
+  async function confirmCloseOrder() {
+
+    if (!orderIdToClose) return;        // Protege contra fechamento sem ID
+
+    try {
+
+      await api.delete("/order", {
+        params: {
+          order_id: orderIdToClose,
+        },
+      });
+
+      navigation.goBack();
+
+    } catch (err) {
+      console.log(err);
+      alert("Erro ao deletar mesa");
+
+    } finally {
+      setModalCloseOrderVisible(false);
+    }
+  }
+
 
 
   // o item é o q esta dento do input de categorias
   function handleChangeCategory(item: CategoryProps) {
-
     setCategorySelected(item);                            // recebe o item e muda a categoria selecionada - passando p o setCategorySelected o item q recebemos
   }
 
 
   function handleChangeProduct(item: ProductsProps) {
-
     setProductSelected(item);
   }
+
 
 
   // funcao para adicionar um produto na mesa
   async function handleAddItem() {
 
     const response = await api.post('/order/add', {        // adicionando item a mesa
-      order_id: route.params?.orderId,                     // recebendo o id da order
+      order_id: route.params?.order_id,                     // recebendo o id da order
       product_id: productSelected?.id,
       amount: Number(amount)
     })
@@ -168,7 +169,6 @@ export default function Order() {
     // console.log(JSON.stringify(response.data, null, 2))
 
     let data = {                                           // objeto
-
       id: response.data.id,
       product_id: productSelected?.id as string,
       name: productSelected?.name as string,
@@ -180,19 +180,19 @@ export default function Order() {
   }
 
 
+
   // funcao para deletar um item da lista dentro da mesa aberta
   async function handleDeleteItem(item_id: string) {
 
-    await api.delete('/order/remove', {                   // deletando o item da lista
+    await api.delete('/order/remove', {                   // deletando o item da lista      
       params: {
         item_id: item_id
       }
     });
 
     // apos remover o item da api, removemos esse item da lista e atualizamos a interface
-    let removeItem = items.filter(item => {               // filtrar e remover o item e devolver todos exceto o q removeu
-
-      return (item.id !== item_id);                        // retorna os item q sao diferentes do id do item q removeu
+    let removeItem = items.filter(item => {               // filtrar e remover o item e devolver todos exceto o q removeu      
+      return (item.id !== item_id);                       // retorna os item q sao diferentes do id do item q removeu
     })
 
     // retorna o array sem o item excluido
@@ -201,16 +201,17 @@ export default function Order() {
 
 
   // funcao para ir ate a tela de FinishOrder
-  function handleFinishOrder(){
+  function handleFinishOrder() {
 
-    navigation.navigate('FinishOrder');
+    navigation.navigate('FinishOrder', {
+      number: route.params?.number,
+      order_id: route.params?.order_id,
+      name: route.params?.name
+    });
   }
 
 
-
-
   return (
-
     <View style={styles.container}>
 
       <View style={styles.header}>
@@ -327,10 +328,35 @@ export default function Order() {
         />
       </Modal>
 
+
+
+      {/* Modal de Confirmação para Fechar a Mesa */}
+      <Modal
+        transparent={true}
+        visible={modalCloseOrderVisible}
+        animationType="slide"
+      >
+        <View style={styles.modalContainerFechamentoMesa}>
+          <View style={styles.modalContentFechamentoMesa}>
+
+            <Text style={styles.modalTextFechamentoMesa}>Você tem certeza que deseja fechar esta mesa?</Text>
+
+            <View style={styles.buttonContainerFechamentoMesa}>
+              <TouchableOpacity onPress={() => setModalCloseOrderVisible(false)} style={styles.buttonFechamentoMesa}>
+                <Text style={styles.buttonTextFechamentoMesa}>Cancelar</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={confirmCloseOrder} style={styles.buttonFechamentoMesaConfirmar}>
+                <Text style={styles.buttonTextFechamentoMesa}>Confirmar</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </View>
+      </Modal>
+
     </View>
-
   );
-
 }
 
 // preciso tdoas as categorias q tem
@@ -438,137 +464,59 @@ const styles = StyleSheet.create({
     color: "#101026",
     borderRadius: 6,
   },
+
+
+  // estilos do modal fe fechamso da mesa
+
+  modalContainerFechamentoMesa: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+
+  modalContentFechamentoMesa: {
+    width: "92%",
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 6,
+    alignItems: "center",
+  },
+
+  modalTextFechamentoMesa: {
+    fontSize: 18,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    textTransform: 'capitalize'
+  },
+
+  buttonContainerFechamentoMesa: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+
+  buttonFechamentoMesa: {
+    backgroundColor: "#3fd1ff",
+    padding: 10,
+    borderRadius: 6,
+    margin: 5,
+    flex: 1,
+    alignItems: "center",
+  },
+
+  buttonTextFechamentoMesa: {
+    fontSize: 18,
+    color: "#000",
+    fontWeight: "bold",
+  },
+
+  buttonFechamentoMesaConfirmar: {
+    backgroundColor: "#0bd90b",
+    padding: 10,
+    borderRadius: 5,
+    margin: 5,
+    flex: 1,
+    alignItems: "center",
+  }
 });
-
-// essa pagina precisa ser colcoada dentro do app.routes onde somente user logados podem acessar
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// async function handleCloseOrder() {                          // funcao para deletar
-
-//   try {
-//     await api.delete('/order', {
-//       params:{
-//         order_id: route.params?.orderId
-//       }
-//     })
-
-//     navigation.goBack()                                      // para voltar uma tela, caso tenha deletado a order
-
-//   } catch (err) {
-//     console.log(err)
-//   }
-
-// }
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-// import React, { useState, useEffect } from "react";
-// import { api } from "../../services/api";
-// import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
-// import { Feather } from "@expo/vector-icons";
-// import { ModalPicker } from "../../components/ModalPicker";
-// import { ListItem } from '../../components/ListItem';
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   TouchableOpacity,
-//   TextInput,
-//   Alert,
-//   Modal,
-//   FlatList
-// } from "react-native";
-
-// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-// import { StackParamsList } from '../../routes/app.routes';
-
-// type RouteDetailParams = {
-//   Order: {
-//     number: number | string;
-//     name: string;
-//     orderId: string;
-//   };
-// };
-
-// export default function Order() {
-//   const route = useRoute<RouteDetailParams>();
-//   const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
-
-//   const [isCancelConfirmed, setIsCancelConfirmed] = useState(false);
-
-//   useEffect(() => {
-//     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-//       // Bloqueia a navegação se o pedido não foi cancelado
-//       if (!isCancelConfirmed) {
-//         e.preventDefault();
-
-//         Alert.alert(
-//           "Cancelar Pedido",
-//           "Você tem certeza que deseja cancelar o pedido?",
-//           [
-//             {
-//               text: "Não",
-//               style: "cancel",
-//             },
-//             {
-//               text: "Sim",
-//               onPress: () => {
-//                 setIsCancelConfirmed(true);
-//                 navigation.dispatch(e.data.action); // Prossegue com a navegação
-//               },
-//             },
-//           ]
-//         );
-//       }
-//     });
-
-//     return unsubscribe; // Remove o listener ao desmontar o componente
-//   }, [navigation, isCancelConfirmed]);
-
-//   async function handleCloseOrder() {
-//     Alert.alert(
-//       "Confirmar Exclusão",
-//       "Você tem certeza que deseja FECHAR essa Mesa?",
-//       [
-//         {
-//           text: "Cancelar",
-//           onPress: () => console.log("Cancelado"),
-//           style: "cancel",
-//         },
-//         {
-//           text: "Sim",
-//           onPress: async () => {
-//             try {
-//               await api.delete("/order", {
-//                 params: {
-//                   order_id: route.params?.orderId,
-//                 },
-//               });
-//               navigation.goBack();
-//             } catch (err) {
-//               console.log(err);
-//               alert("Erro ao deletar mesa");
-//             }
-//           },
-//         },
-//       ]
-//     );
-//   }
-
-//   // O resto do seu código...
-
-//   return (
-//     <View style={styles.container}>
-//       {/* Seu JSX aqui */}
-//     </View>
-//   );
-// }
-
-// // Estilos e outras funções...
