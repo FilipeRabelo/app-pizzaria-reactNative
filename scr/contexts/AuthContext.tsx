@@ -141,16 +141,18 @@ export function AuthProvider({ children }: AuthProviderProps) {   // AuthProvide
 
     await AsyncStorage.clear()         // PROMISSE -- para limpar o AsyncStorage
 
-      .then(() => {                    // tudo volta a ser vazio e desloga o user
+    .then(() => {                    // tudo volta a ser vazio e desloga o user
 
-        setUser({
-          id: '',
-          name: '',
-          email: '',
-          token: ''
-        })
+      setUser({
+        id: '',
+        name: '',
+        email: '',
+        token: ''
       })
+    })
   }
+
+
 
 
 

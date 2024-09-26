@@ -68,3 +68,31 @@
     "updated_at": "2024-09-14T05:29:35.299Z"
   }
 ]
+
+
+
+
+
+
+  <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+    <Text style={styles.logoutButtonText}>Sair</Text>
+  </TouchableOpacity>
+
+    {/* // Modal de Logout */}
+  <Modal
+    isVisible={modalLogoutVisible} // Usando isVisible para controle do modal
+    onBackdropPress={cancelLogout} // Fecha o modal ao clicar fora
+    style={styles.modalLogout} // Estilo do modal
+  >
+    <View style={styles.modalContentLogout}>
+      <Text style={styles.modalTextLogout}>Você realmente deseja sair?</Text>
+      <View style={styles.buttonContainerLogout}>
+        <TouchableOpacity style={styles.confirmButtonLogout} onPress={confirmLogout}>
+          <Text style={styles.buttonTextLogout}>Sim</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cancelButtonLogout} onPress={cancelLogout}>
+          <Text style={styles.buttonTextLogout}>Não</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </Modal>

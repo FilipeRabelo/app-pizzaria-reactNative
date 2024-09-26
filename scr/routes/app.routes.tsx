@@ -3,6 +3,7 @@
 
 // todas as rotas onde qndo so o user logados podem acessar
 
+
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -10,7 +11,7 @@ import Dashboard from "../pages/Dashboard";
 import Order from "../pages/Order";
 import FinishOrder from "../pages/FinishOrder";
 
-export type StackParamsList = {                     
+export type StackParamsList = {
 
   Dashboard: undefined,                             // undefined para nao receber parametros
 
@@ -23,8 +24,9 @@ export type StackParamsList = {
   FinishOrder: {
     number: number | string,                        // numero da mesa
     order_id: string,
-    name: string 
-  }
+    name: string
+  },
+
 }
 
 const Stack = createNativeStackNavigator<StackParamsList>();   // <> generic - forma de definir tipos que podem ser usados de forma flexível
@@ -58,8 +60,9 @@ function AppRoutes() {
           },
           headerTintColor: '#FFF',
           headerBackTitle: 'Voltar',                    // Título que aparece na seta de voltar
-          headerBackTitleVisible: true,                 // Exibe o título na seta (em iOS)
-        }}             
+          headerBackTitleVisible: true,                // Exibe o título na seta (em iOS)
+        }}
+
       />
 
     </Stack.Navigator>
